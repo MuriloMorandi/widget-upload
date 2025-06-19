@@ -1,0 +1,1 @@
+ALTER TABLE "uploads" RENAME COLUMN "create_at" TO "created_at";

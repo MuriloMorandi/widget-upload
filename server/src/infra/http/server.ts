@@ -10,6 +10,7 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod';
+import { getUploadsRoute } from './routes/getUploads';
 import { transformSwaggerSchema } from './transform-swagger-schema';
 
 const server = fastify();
@@ -18,8 +19,7 @@ server.setValidatorCompiler(validatorCompiler);
 server.setSerializerCompiler(serializerCompiler);
 
 server.setErrorHandler((error, request, reply) => {
-  if (hasZodFastifySchemaValidationErrors(error))
-  {
+  if (hasZodFastifySchemaValidationErrors(error)) {
     return reply.status(400).send({
       message: 'Validation error',
       issues: error.validation,
@@ -51,10 +51,11 @@ server.register(fastifySwaggerUi, {
 });
 
 server.register(uploadImageRoute);
+server.register(getUploadsRoute);
 
 console.log(env.DATABASE_URL);
 
-server.listen({ port: 3333, host: '0.0.0.0' }).then((val) => {
+server.listen({ port: 3333, host: '0.0.0.0' }).then(val => {
   console.log('HTTP Server running!');
-  console.log(`Swagger URL: ${val}/docs`)
+  console.log(`Swagger URL: ${val}/docs`);
 });
