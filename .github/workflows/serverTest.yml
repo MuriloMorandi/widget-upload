@@ -41,8 +41,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
-      - run: pnpm install --frozen-lockfile
+          cache: pnpm
+          cache-dependency-path: server/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
         working-directory: server
-      - run: pnpm run test
+
+      - name: Run E2E tests
+        run: pnpm run test
         working-directory: server
