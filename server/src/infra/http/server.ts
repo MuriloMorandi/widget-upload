@@ -10,6 +10,7 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod';
+import { exportUploadsRoute } from './routes/exportUploads';
 import { getUploadsRoute } from './routes/getUploads';
 import { transformSwaggerSchema } from './transform-swagger-schema';
 
@@ -52,6 +53,7 @@ server.register(fastifySwaggerUi, {
 
 server.register(uploadImageRoute);
 server.register(getUploadsRoute);
+server.register(exportUploadsRoute);
 
 console.log(env.DATABASE_URL);
 
