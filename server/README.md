@@ -59,7 +59,7 @@
     ```
 - **Stop the containers:**
     ```bash
-    docker-compose down
+    docker-compose stop
     ```
 
 
