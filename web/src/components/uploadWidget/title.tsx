@@ -11,7 +11,7 @@ export function UploadWidgetTitle() {
                 ? <span
                     className="flex items-baseline gap-1"
                 >
-                    Uploading
+                    Uploading{" "}
                     <span
                         className="text-xs text-zinc-400 tabular-nums"
                     >
