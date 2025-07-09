@@ -17,7 +17,11 @@ export function UploadWidgetUploadItem({
 }: UploadWidgetUploadItemProps) {
     const cancelUpload = useUploads(store => store.cancelUpload);
     const progress = Math.min(
-        Math.round((upload.uploadSizeInBytes * 100) / upload.originalSizeInBytes),
+        upload.compressedSizeInBytes
+            ? Math.round(
+                (upload.uploadSizeInBytes * 100) / upload.compressedSizeInBytes
+            )
+            : 0,
         100
     );
 
@@ -42,7 +46,7 @@ export function UploadWidgetUploadItem({
                     </span>
                     <div className="size-1 rounded-full bg-zinc-700" />
                     <span>
-                        {formatBytes(upload.file.size)}
+                        {formatBytes(upload.compressedSizeInBytes || upload.originalSizeInBytes)}
                         <span className="text-green-400 ml-1">-94%</span>
                     </span>
                     <div className="size-1 rounded-full bg-zinc-700" />
@@ -76,7 +80,10 @@ export function UploadWidgetUploadItem({
             <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
                 <Button
                     size="icon-sm"
-                    disabled={upload.status !== 'success'}
+                    onClick={() =>
+                        upload.remoteURL && navigator.clipboard.writeText(upload.remoteURL)
+                    }
+                    disabled={!upload.remoteURL}
                 >
                     <Download className="size-4" strokeWidth={1.5} />
                     <span className="sr-only">Download compressed image</span>

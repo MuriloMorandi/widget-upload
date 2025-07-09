@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { useShallow } from "zustand/shallow";
 import { immer } from "zustand/middleware/immer";
 import { uploadFileToStorage } from "../http/uploadFileToStorage";
+import { compressImage } from "../utils/compressImage";
 
 export type Upload = {
     name: string;
@@ -11,7 +12,9 @@ export type Upload = {
     abortController: AbortController;
     status: "progress" | "success" | "error" | "canceled";
     originalSizeInBytes: number;
+    compressedSizeInBytes?: number;
     uploadSizeInBytes: number;
+    remoteURL?: string
 };
 
 type UploadState = {
@@ -50,9 +53,20 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
 
             try
             {
-                await uploadFileToStorage(
+                const compressedFile = await compressImage({
+                    file: upload.file,
+                    maxWidth: 200,
+                    maxHeight: 200,
+                    quality: 0.8,
+                });
+
+                updateUpload(uploadId,
+                    { compressedSizeInBytes: compressedFile.size }
+                );
+
+                const { url } = await uploadFileToStorage(
                     {
-                        file: upload.file,
+                        file: compressedFile,
                         onProgress(sizeInBytes) {
                             updateUpload(uploadId, {
                                 uploadSizeInBytes: sizeInBytes,
@@ -62,8 +76,11 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
                     { signal: upload.abortController.signal }
                 );
 
+                console.log(url)
+
                 updateUpload(uploadId, {
                     status: "success",
+                    remoteURL: url
                 });
             } catch (error)
             {
@@ -142,8 +159,13 @@ export const usePendingUploads = () => {
             const { total, uploaded } = Array.from(store.uploads.values())
                 .reduce(
                     (acc, upload) => {
-                        acc.total += upload.originalSizeInBytes;
-                        acc.uploaded += upload.uploadSizeInBytes;
+                        if (upload.compressedSizeInBytes)
+                        {
+                            acc.uploaded += upload.uploadSizeInBytes;
+                        }
+
+                        acc.total +=
+                            upload.compressedSizeInBytes || upload.originalSizeInBytes;
 
                         return acc;
                     },
