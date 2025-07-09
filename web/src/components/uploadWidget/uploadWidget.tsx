@@ -5,15 +5,16 @@ import { UploadWidgetHeader } from "./header";
 import { motion, useCycle } from "motion/react";
 import { UploadWidgetMinimizedButton } from "./minimizedButton";
 import { UploadWidgetUploadList } from "./uploadList";
+import { usePendingUploads } from "../../store/uploads";
 
 export function UploadWidget() {
     const [isWidgetOpen, toggleWidgetOpen] = useCycle(false, true);
-    const isThereAnyPendindUploads = true;
+    const { isThereAnyPendingUploads } = usePendingUploads();
 
     return (
         <Collapsible.Root onOpenChange={() => toggleWidgetOpen()} asChild>
             <motion.div
-                data-progress={isThereAnyPendindUploads}
+                data-progress={isThereAnyPendingUploads}
                 className={`
                     bg-zinc-900 
                     overflow-hidden 
