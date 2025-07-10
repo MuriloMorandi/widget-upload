@@ -21,6 +21,7 @@ type UploadState = {
     uploads: Map<string, Upload>;
     addUploads: (files: File[]) => void;
     cancelUpload: (uploadId: string) => void;
+    retryUpload: (uploadId: string) => void;
 };
 
 enableMapSet();
@@ -50,6 +51,16 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
             {
                 return;
             }
+
+            const abortController = new AbortController();
+
+            updateUpload(uploadId, {
+                uploadSizeInBytes: 0,
+                remoteURL: undefined,
+                compressedSizeInBytes: undefined,
+                abortController,
+                status: "progress",
+            });
 
             try
             {
@@ -136,10 +147,15 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
             }
         }
 
+        function retryUpload(uploadId: string) {
+            processUpload(uploadId);
+        }
+
         return {
             uploads: new Map(),
             addUploads,
             cancelUpload,
+            retryUpload
         };
     })
 );

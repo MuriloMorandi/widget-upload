@@ -5,6 +5,7 @@ import { Download, ImageUp, Link2, RefreshCcw, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { useUploads, type Upload } from "../../store/uploads";
 import { formatBytes } from "../../utils/formatBytes";
+import { downloadUrl } from "../../utils/downloadUrl";
 
 interface UploadWidgetUploadItemProps {
     upload: Upload
@@ -16,6 +17,8 @@ export function UploadWidgetUploadItem({
     uploadId,
 }: UploadWidgetUploadItemProps) {
     const cancelUpload = useUploads(store => store.cancelUpload);
+    const retryUpload = useUploads((store) => store.retryUpload);
+
     const progress = Math.min(
         upload.compressedSizeInBytes
             ? Math.round(
@@ -37,7 +40,7 @@ export function UploadWidgetUploadItem({
             <div className="flex flex-col gap-1">
                 <span className="text-xs font-medium flex items-center gap-1">
                     <ImageUp className="size-3 text-zinc-300" strokeWidth={1.5} />
-                    <span>{upload.name} </span>
+                    <span className="max-w-[180px] truncate">{upload.name} </span>
                 </span>
 
                 <span className="text-xxs text-zinc-400 flex gap-1.5 items-center">
@@ -87,30 +90,38 @@ export function UploadWidgetUploadItem({
                 />
             </Progress.Root>
 
-            <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
+            <div className="absolute top-2 right-2 flex items-center gap-1">
                 <Button
                     size="icon-sm"
-                    onClick={() =>
-                        upload.remoteURL && navigator.clipboard.writeText(upload.remoteURL)
-                    }
-                    aria-disabled={!upload.remoteURL}
-                    asChild
+                    disabled={!upload.remoteURL}
+                    onClick={() => {
+                        if (upload.remoteURL)
+                        {
+                            downloadUrl(upload.remoteURL)
+                        }
+                    }}
                 >
-                    <a href={upload.remoteURL} target="_blank" rel="noopener">
-                        <Download className="size-4" strokeWidth={1.5} />
-                        <span className="sr-only">Download compressed image</span>
-                    </a>
+
+                    <Download className="size-4" strokeWidth={1.5} />
+                    <span className="sr-only">Download compressed image</span>
                 </Button>
 
                 <Button
                     size="icon-sm"
-                    disabled={!['canceled', 'error'].includes(upload.status)}
+                    disabled={!upload.remoteURL}
+                    onClick={() =>
+                        upload.remoteURL && navigator.clipboard.writeText(upload.remoteURL)
+                    }
                 >
                     <Link2 className="size-4" strokeWidth={1.5} />
                     <span className="sr-only">Copy remote URL</span>
                 </Button>
 
-                <Button size="icon-sm">
+                <Button
+                    size="icon-sm"
+                    onClick={() => retryUpload(uploadId)}
+                    disabled={!["canceled", "error"].includes(upload.status)}
+                >
                     <RefreshCcw className="size-4" strokeWidth={1.5} />
                     <span className="sr-only">Retry upload</span>
                 </Button>
