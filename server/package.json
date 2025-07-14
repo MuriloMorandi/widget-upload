@@ -5,7 +5,8 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"build": "tsup-node",
+		"build": "tsup src/infra/http/server.ts --format esm,cjs --dts",
+		"start": "node dist/server.js",
 		"dev": "tsx watch --env-file .env src/infra/http/server.ts",
 		"test": "dotenv -e .env.test -- vitest run",
 		"test:watch": "dotenv -e .env.test -- vitest",
