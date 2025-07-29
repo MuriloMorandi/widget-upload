@@ -63,6 +63,10 @@ jobs:
           SHA=$(echo $GITHUB_SHA | head -c7)
           echo "sha=$SHA" >> $GITHUB_OUTPUT
 
+      - name: Set up Docker Buildx
+        id: set-up-docker-buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build the image to Trivy scanner
         uses: docker/build-push-action@v6
         with:
