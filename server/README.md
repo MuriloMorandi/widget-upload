@@ -61,4 +61,3 @@
     ```bash
     docker-compose stop
     ```
-

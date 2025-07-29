@@ -68,20 +68,23 @@ jobs:
         with:
           context: ./server
           load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:scan
-          
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: '${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:scan'
-          format: 'table'
-          exit-code: '1'
+          image-ref: "${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:scan"
+          format: "table"
+          exit-code: "1"
           ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
 
       - name: Build and push the image to AWS ECR
         uses: docker/build-push-action@v6
         with:
+          cache-from: type=ghas
           context: ./server
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ steps.generate-tag.outputs.sha }}
