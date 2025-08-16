@@ -49,16 +49,15 @@
 
 ###  Docker Commands
 
-- **Build and start the containers:**
+- **Start the containers:**
     ```bash
-    docker-compose up --build
+    docker-compose up --build -d
     ```
 - **Start the containers (without rebuilding):**
     ```bash
-    docker-compose up
+    docker-compose up -d
     ```
 - **Stop the containers:**
     ```bash
     docker-compose stop
     ```
-    
