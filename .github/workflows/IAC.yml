@@ -41,6 +41,6 @@ jobs:
         uses: pulumi/actions@v6
         with:
           command: up
-          stack-name: widget-upload-iac/stg
+          stack-name: MuriloMorandi/widget-upload-iac/stg
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
