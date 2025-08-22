@@ -15,14 +15,6 @@ const ecr = new aws.ecr.Repository('widget-upload-iac-ecr', {
     }
 });
 
-const ecr2 = new aws.ecr.Repository('widget-upload-iac-ecr2', {
-    name: 'widget-upload-iac-ecr2',
-    imageTagMutability: 'IMMUTABLE',
-    tags: {
-        IAC: 'true'
-    }
-});
-
 
 export const bucketName = bucket.id;
 export const bucketInfo = bucket.bucket;
@@ -30,6 +22,3 @@ export const bucketArn = bucket.arn;
 
 export const ecrName = ecr.name;
 export const ecrRepository = ecr.repositoryUrl;
-
-export const ecrName2 = ecr2.name;
-export const ecrRepository2 = ecr2.repositoryUrl;
