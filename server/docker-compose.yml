@@ -1,5 +1,7 @@
+name: widget-upload
 services:
-  pg:
+  postgres-upload:
+    container_name: postgres-upload
     image: bitnami/postgresql:latest
     ports:
       - '5432:5432'
