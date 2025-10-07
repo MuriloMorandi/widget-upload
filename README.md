@@ -1,4 +1,4 @@
-# widget-upload
+# W#idget Upload
 
 Widget de upload de arquivos/imagens usando **React**, **Fastify** e **Pulumi**, com backend usando Cloudflare R2.
 
